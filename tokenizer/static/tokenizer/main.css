@@ -1,0 +1,128 @@
+/* small popup을 위한 css */
+/* Popup container - can be anything you want */
+.popup {
+  position: relative;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* The actual popup */
+.popup .popuptext {
+  visibility: hidden;
+  width: 160px;
+  background-color: #555;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 8px 0;
+  position: absolute;
+  z-index: 1;
+  bottom: 125%;
+  left: 50%;
+  margin-left: -80px;
+}
+
+/* Popup arrow */
+.popup .popuptext::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #555 transparent transparent transparent;
+}
+
+/* Toggle this class - hide and show the popup */
+.popup .show {
+  visibility: visible;
+  -webkit-animation: fadeIn 1s;
+  animation: fadeIn 1s;
+}
+
+/* Add animation (fade in the popup) */
+@-webkit-keyframes fadeIn {
+  from {opacity: 0;}
+  to {opacity: 1;}
+}
+
+@keyframes fadeIn {
+  from {opacity: 0;}
+  to {opacity:1 ;}
+}
+    .bar-chart {
+      display: flex;
+      justify-content: space-around;
+      height: 160px;
+      padding-top: 60px;
+      overflow: hidden;
+    }
+    .bar-chart .bar {
+        flex: 100%;
+        align-self: flex-end;
+        margin-right: 2px;
+        position: relative;
+        background-color: #79aec8;
+    }
+    .bar-chart .bar:last-child {
+        margin: 0;
+    }
+    .bar-chart .bar:hover {
+        background-color: #417690;
+    }
+
+    .bar-chart .bar .bar-tooltip {
+        position: relative;
+        z-index: 999;
+    }
+    .bar-chart .bar .bar-tooltip {
+        position: absolute;
+        top: -60px;
+        left: 50%;
+        transform: translateX(-50%);
+        text-align: center;
+        font-weight: bold;
+        opacity: 0;
+    }
+    .bar-chart .bar:hover .bar-tooltip {
+        writing-mode: horizontal-tb;
+        opacity: 1;
+    }
+        .bar-chart .bar .bar-tooltip2 {
+        position: relative;
+        z-index: 999;
+    }
+    .bar-chart .bar .bar-tooltip2 {
+        writing-mode: vertical-rl;
+        text-orientation: upright;
+        position: absolute;
+        top: -12rem;
+        left: 50%;
+        transform: translateX(-50%);
+        text-align: center;
+        font-weight: bold;
+        opacity: 1;}
+.box {
+  float: left;
+  height: 20px;
+  width: 20px;
+  margin-bottom: 15px;
+  border: 1px solid black;
+  clear: both;
+}
+
+.red {
+  background-color: darkred;
+}
+
+.green {
+  background-color: darkgreen;
+}
+
+.yellow {
+  background-color: yellow;
+}

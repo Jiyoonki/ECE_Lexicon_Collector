@@ -1,0 +1,58 @@
+
+<!DOCTYPE html>
+{% load static %}
+{% load custom_tags %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1">
+    <title>ECE-LexiconCollector</title>
+    <link rel="stylesheet" href="//unpkg.com/bootstrap@4/dist/css/bootstrap.min.css">
+    <script src='//unpkg.com/jquery@3/dist/jquery.min.js'></script>
+    <script src='//unpkg.com/popper.js@1/dist/umd/popper.min.js'></script>
+    <script src='//unpkg.com/bootstrap@4/dist/js/bootstrap.min.js'></script>
+    <link rel="Stylesheet" href="{% static 'tokenizer/main.css' %}">
+
+
+
+
+<style>
+
+</style>
+<script>
+
+
+$(document).ready(function() {
+
+    var auth_user_pk = '{{auth_user_pk}}'
+    var user_id = '{{user_id}}'
+    var positive_comment = '{{positive_comment}}'
+    var negative_comment = '{{negative_comment}}'
+
+    // http://127.0.0.1:8000/ECE-LexiconCollector 로 redirect 한다.
+    var url = window.location.href.split('/')
+    url_to = url[0] + '//' + url[2] + '/' + url[3]
+    window.location.replace(url_to)
+
+    // url ECE-LexiconCollector/signup/signup_after 를 호출하여 signup_after view를 실행한다.
+    if (auth_user_pk != '' && user_id != '' && positive_comment != '' && negative_comment != '') {
+        $.ajax({
+            type: "GET",
+            url: "/ECE-LexiconCollector/signup/signup_after",
+            data: {auth_user_pk: auth_user_pk,
+                   user_id: user_id,
+                   positive_comment: positive_comment,
+                   negative_comment: negative_comment,
+                   }
+        });
+    }
+
+});
+
+</script>
+
+</head>
+
+<body>
+
+</body>
+</html>

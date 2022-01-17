@@ -1,0 +1,838 @@
+
+<!DOCTYPE html>
+{% load static %}
+{% load custom_tags %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1">
+    <title>ECE-LexiconCollector</title>
+    <link rel="stylesheet" href="//unpkg.com/bootstrap@4/dist/css/bootstrap.min.css">
+    <script src='//unpkg.com/jquery@3/dist/jquery.min.js'></script>
+    <script src='//unpkg.com/popper.js@1/dist/umd/popper.min.js'></script>
+    <script src='//unpkg.com/bootstrap@4/dist/js/bootstrap.min.js'></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.min.css"/>
+    <link href="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet" />
+    <script src="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
+    <link rel="Stylesheet" href="{% static 'tokenizer/main.css' %}">
+
+<style>
+
+</style>
+<script>
+
+
+// 페이지가 로드될 때 실행한다
+function onLoadBody(){
+    // sessionStorage에 user_id를 저장한다
+    sessionStorage.setItem('user_id', "{{ data.user_id }}")
+    sessionStorage.setItem('user_key', "{{ data.user_key }}")
+    sessionStorage.setItem('id', "{{ data.id }}")
+    sessionStorage.setItem('pos_text_norm', "{{ data.pos_text_norm }}")
+    sessionStorage.setItem('neg_text_norm', "{{ data.neg_text_norm }}")
+    sessionStorage.setItem('progress', "{{ progress }}")
+    sessionStorage.setItem('total', "{{ total }}")
+    sessionStorage.setItem('max_rand_order', "{{ max_rand_order }}")
+    sessionStorage.setItem('pos_keyword', "{{ data.pos_keyword }}")
+    sessionStorage.setItem('neg_keyword', "{{ data.neg_keyword }}")
+    sessionStorage.setItem('pos_keyword_rec', "{{ pos_keyword_rec }}")
+    sessionStorage.setItem('neg_keyword_rec', "{{ neg_keyword_rec }}")
+
+}
+
+function poschange() {
+  $("#pos_keyword_button").empty();
+  $('#selected_positive_words').empty();
+  var pos_edited_words = document.getElementById('pos_text_edit').value.trim().replace(/ {1,}/g, ' ');
+
+  document.getElementById("pos_text_edit").value = pos_edited_words;
+  $('#pos_text_edit_button').editable('setValue', pos_edited_words);
+  pos_edited_words = pos_edited_words.split(' ');
+
+  var cell = document.getElementById("pos_keyword_button");
+  for (i=0; i<pos_edited_words.length; i++){
+      var j = i + 1;
+      var button = document.createElement("button");
+      button.type = "button";
+      button.textContent = pos_edited_words[i];
+      button.value = button.textContent;
+      button.className = "btn btn-outline-info";
+      button.id = "pos_" + j ;
+      button.name = "positive_words";
+      $(button).on("click", onClickButton);
+      cell.appendChild(button);
+  }
+  //pos_edited_words = pos_edited_words.trim()
+
+    var pos_text_norm_edited = document.getElementById('pos_text_edit').value
+    $.ajax({
+        type: "GET",
+        url: "/ECE-LexiconCollector/update_edit",
+        data: {user_id: sessionStorage.getItem('user_id'),
+               user_key: sessionStorage.getItem('user_key'),
+               id: sessionStorage.getItem('id'),
+               type: 'positive_words',
+               text_norm: pos_text_norm_edited,
+        }
+    });
+}
+
+
+function negchange() {
+  $('#neg_keyword_button').empty();
+  $('#selected_negative_words').empty();
+    var neg_edited_words = document.getElementById('neg_text_edit').value.trim().replace(/ {1,}/g, ' ');
+
+  document.getElementById("neg_text_edit").value = neg_edited_words;
+  $('#neg_text_edit_button').editable('setValue', neg_edited_words);
+  neg_edited_words = neg_edited_words.split(' ');
+  var cell = document.getElementById("neg_keyword_button");
+  for (i=0; i<neg_edited_words.length; i++){
+      var j = i + 1;
+      var button = document.createElement("button");
+      button.type = "button";
+      button.textContent = neg_edited_words[i];
+      button.value = button.textContent;
+      button.className = "btn btn-outline-info";
+      button.id = "neg_" + j ;
+      button.name = "negative_words";
+      $(button).on("click", onClickButton);
+      cell.appendChild(button);
+  }
+
+        var neg_text_norm_edited = document.getElementById('neg_text_edit').value
+        $.ajax({
+        type: "GET",
+        url: "/ECE-LexiconCollector/update_edit",
+        data: {user_id: sessionStorage.getItem('user_id'),
+               user_key: sessionStorage.getItem('user_key'),
+               id: sessionStorage.getItem('id'),
+               type: 'negative_words',
+               text_norm: neg_text_norm_edited,
+        }
+    });
+}
+
+function clearpos() {
+    var x = document.getElementById("pos_text_edit");
+        if (x.style.display === "none") {
+        x.style.display = 'inline-block';
+    }
+    else{
+        x.style.display = 'none';
+    }
+}
+
+
+
+function clearneg() {
+        var x = document.getElementById("neg_text_edit");
+        if (x.style.display === "none") {
+        x.style.display = 'inline-block';
+    }
+    else{
+        x.style.display = 'none';
+    }
+}
+
+function posdefault() {
+    $("#pos_keyword_button").empty();
+    $('#selected_positive_words').empty();
+    var default_text = sessionStorage.getItem('pos_text_norm');
+    var default_button = default_text.split(' ');
+    var cell = document.getElementById("pos_keyword_button");
+      for (i=0; i<default_button.length; i++){
+      var j = i + 1;
+      var button = document.createElement("button");
+      button.type = "button";
+      button.textContent = default_button[i];
+      button.value = button.textContent;
+      button.className = "btn btn-outline-info";
+      button.id = "pos_" + j ;
+      button.name = "positive_words";
+      $(button).on("click", onClickButton);
+      cell.appendChild(button);
+    }
+    var x = document.getElementById("pos_text_edit");
+    x.value = default_text;
+    x.style.display = 'none';
+
+    $('#pos_text_edit_button').editable('setValue', default_text);
+
+      $.ajax({
+        type: "GET",
+        url: "/ECE-LexiconCollector/update_edit",
+        data: {user_id: sessionStorage.getItem('user_id'),
+               user_key: sessionStorage.getItem('user_key'),
+               id: sessionStorage.getItem('id'),
+               type: 'positive_words',
+               text_norm: null,
+        }
+      });
+
+}
+
+function negdefault() {
+    $("#neg_keyword_button").empty();
+    $('#selected_negative_words').empty();
+    var default_text = sessionStorage.getItem('neg_text_norm');
+    var default_button = default_text.split(' ');
+    var cell = document.getElementById("neg_keyword_button");
+      for (i=0; i<default_button.length; i++){
+      var j = i + 1;
+      var button = document.createElement("button");
+      button.type = "button";
+      button.textContent = default_button[i];
+      button.value = button.textContent;
+      button.className = "btn btn-outline-info";
+      button.id = "neg_" + j ;
+      button.name = "negative_words";
+      $(button).on("click", onClickButton);
+      cell.appendChild(button);
+    }
+    var x = document.getElementById("neg_text_edit");
+    x.value = default_text;
+    x.style.display = 'none';
+
+    $('#neg_text_edit_button').editable('setValue', default_text);
+
+    $.ajax({
+    type: "GET",
+    url: "/ECE-LexiconCollector/update_edit",
+    data: {user_id: sessionStorage.getItem('user_id'),
+           user_key: sessionStorage.getItem('user_key'),
+           id: sessionStorage.getItem('id'),
+           type: 'negative_words',
+           text_norm: null,
+    }
+  });
+}
+
+// document ready
+$(function () {
+    $('.btn.btn-outline-info').click(onClickButton);
+});
+
+// 버튼 클릭 이벤트
+function onClickButton(e){
+    e.preventDefault();
+    if($(this).hasClass('active')){
+        $(this).removeClass('active')
+        $(this).css('background-color','rgb(255,255,255)')
+    } else {
+        $(this).addClass('active')
+        $(this).css('background-color','#17a2b8')
+    }
+
+    var selected_keywords = ""
+    var selected_keywords_order = ""
+    $(".active[name=" + this.name + "]").each(function(){
+        selected_keywords = selected_keywords + $(this).val() + " ";
+        selected_keywords_order = selected_keywords_order + this.id.replace(/[^\d]/g, '') + " ";
+    })
+    selected_keywords = selected_keywords.trim()
+    selected_keywords_order = selected_keywords_order.trim()
+    console.log(selected_keywords);
+    console.log(selected_keywords_order);
+
+    var cell = document.getElementById("selected_" + this.name);
+    while ( cell.hasChildNodes() ) { cell.removeChild( cell.firstChild ); }
+
+    selected_keywords_split = selected_keywords.split(" ")
+    for (i=0; i<selected_keywords_split.length; i++) {
+        var button = document.createElement("input");
+        button.type = "button";
+        button.value = selected_keywords_split[i];
+        button.className = "btn btn-outline-primary";
+        cell.appendChild(button);
+    }
+
+    $.ajax({
+        type: "GET",
+        url: "/ECE-LexiconCollector/update",
+        data: {user_id: sessionStorage.getItem('user_id'),
+               user_key: sessionStorage.getItem('user_key'),
+               id: sessionStorage.getItem('id'),
+               type: this.name,
+               selected_keywords: selected_keywords,
+               selected_keywords_order : selected_keywords_order,
+        }
+    });
+
+};
+
+$(function () {
+    var pos_keyword = sessionStorage.getItem("pos_keyword");
+    var neg_keyword = sessionStorage.getItem("neg_keyword");
+    var pos_keyword_rec = JSON.parse(sessionStorage.getItem("pos_keyword_rec"));
+    var neg_keyword_rec = JSON.parse(sessionStorage.getItem("neg_keyword_rec"));
+
+    if (pos_keyword == "" && neg_keyword == "") {
+            for (i=0; i<pos_keyword_rec.length - 1; i++) {
+                $("#pos_" + pos_keyword_rec[i]).addClass('active');
+                $("#pos_" + pos_keyword_rec[i]).css('background-color', 'rgb(0, '+ (153 + (35*i)) +', 0)');
+                console.log($("#pos_" + pos_keyword_rec[i]))
+            }
+            for (i=0; i<neg_keyword_rec.length - 1; i++) {
+                $("#neg_" + neg_keyword_rec[i]).addClass('active');
+                $("#neg_" + neg_keyword_rec[i]).css('background-color', 'rgb('+ (153 + (35*i)) +', 0, 0)');
+            }
+            setTimeout(function() {
+            $("#pos_" + pos_keyword_rec[ pos_keyword_rec.length -1 ]).click()}, 50);
+            console.log("pos_click");
+            setTimeout(function() {
+            $("#neg_" + neg_keyword_rec[ neg_keyword_rec.length -1 ]).click()}, 100);
+            console.log("neg_click");
+            setTimeout(function() {
+                $("#pos_" + pos_keyword_rec[pos_keyword_rec.length - 1]).css('background-color', 'rgb(0, '+ (153 + (35*i)) +', 0)');
+                $("#neg_" + neg_keyword_rec[neg_keyword_rec.length - 1]).css('background-color', 'rgb('+ (153 + (35*i)) +', 0, 0)');
+            }, 150);
+        }
+})
+
+
+function onClickNext(){
+
+    // 현재 선택되어있는 긍정 키워드 수 count
+    var positive_selected_count = 0
+    $(".active[name=positive_words]").each(function(){
+        positive_selected_count = positive_selected_count + 1
+    })
+    // 현재 선택되어있는 부정 키워드 수 count
+    var negative_selected_count = 0
+    $(".active[name=negative_words]").each(function(){
+        negative_selected_count = negative_selected_count + 1
+    })
+
+    // 현재 선택되어있는 키워드 수가 3개보다 작거나 5개보다 많을 경우 함수를 종료한다.
+    if (positive_selected_count < 3 || positive_selected_count > 5 || negative_selected_count < 3 || negative_selected_count > 5 ) {
+        // popup message element를 가져온다.
+        var popup = document.getElementById("popup_next");
+        original_innerHTML = popup.innerHTML
+
+        // 상태에 따라 popup message를 변경한다.
+        if (positive_selected_count < 3) {
+            popup.innerHTML = "Please select at least 3 positive keywords."
+        } else if (positive_selected_count > 5) {
+            popup.innerHTML = "Please select 5 or less positive keywords."
+        } else if (negative_selected_count < 3) {
+            popup.innerHTML = "Please select at least 3 negative keywords."
+        } else {
+            popup.innerHTML = "Please select 5 or less negative keywords"
+        }
+
+
+        // popup message를 표시한다.
+        if (popup.innerHTML == original_innerHTML) {
+            popup.classList.toggle("show");
+        } else if (popup.classList.contains("show") == true) {
+            popup.classList.toggle("show");
+            popup.classList.toggle("show");
+        } else {
+            popup.classList.toggle("show");
+        }
+        return 0;
+    }
+
+    // 현재 데이터가 마지막 데이터일 경우
+    if ({{ data.rand_order }} == {{ total }}) {
+        // popup message element를 가져온다.
+        var popup = document.getElementById("popup_next");
+        original_innerHTML = popup.innerHTML
+
+        popup.innerHTML = "This is the last page"
+
+        // popup message를 표시한다.
+        if (popup.innerHTML == original_innerHTML) {
+            popup.classList.toggle("show");
+        } else if (popup.classList.contains("show") == true) {
+            popup.classList.toggle("show");
+            popup.classList.toggle("show");
+        } else {
+            popup.classList.toggle("show");
+        }
+        return 0;
+    }
+
+    // 키워드 수가 올바르게 선택되었을 경우 다음 데이터로 넘어간다.
+    document.getElementById("next_type").value = "next";
+    $('#form_user_id').submit();
+
+        $.ajax({
+        type: "GET",
+        url: "/ECE-LexiconCollector/administrator",
+        data: {user_id: sessionStorage.getItem('user_id'),
+               progress: sessionStorage.getItem('progress'),
+               cnt: sessionStorage.getItem('total'),
+               max_rand_order: sessionStorage.getItem('max_rand_order'),
+        }
+    });
+}
+
+
+
+function onClickPrevious(){
+    if ({{ data.rand_order }} == 1){
+        return 0;
+    }
+    document.getElementById("next_type").value = "previous";
+    $('#form_user_id').submit();
+}
+
+
+
+// x-editable의 mode를 inline으로 한다.
+$.fn.editable.defaults.mode = 'inline';
+
+// x-editable의 ok, cancel 버튼 태그
+$.fn.editableform.buttons =
+    '<button type="submit" class="btn btn-primary btn-sm editable-submit">' +
+    '<i class="fa fa-fw fa-check"></i>' +
+    '</button>' +
+    '<button type="button" class="btn btn-warning btn-sm editable-cancel">' +
+    '<i class="fa fa-fw fa-times"></i>' +
+    '</button>';
+
+// edit 버튼에 x-editable 적용
+$(document).ready(function() {
+    // id=pos_text_edit_button에 editable 이벤트를 적용한다.
+    $('#pos_text_edit_button').editable({
+        validate: function(value) {
+            // 아무것도 입력하지 않았을 경우
+            if ($.trim(value) === '') {
+                return 'This field is required';
+            }
+        },
+        value: document.getElementById("pos_text_edit").value,  // 제일 처음 표시할 값
+        display: function(value, sourceData) {
+            // check 버튼을 눌렀을 때 값이 수정되었다면 poschange() 함수를 호출한다.
+
+            if (document.getElementById("pos_text_edit").value != value) {
+                document.getElementById("pos_text_edit").value = value
+                poschange()
+            }
+        }
+    });
+
+    // id=neg_text_edit_button에 editable 이벤트를 적용한다.
+    $('#neg_text_edit_button').editable({
+        validate: function(value) {
+            // 아무것도 입력하지 않았을 경우
+            if ($.trim(value) === '') {
+                return 'This field is required';
+            }
+        },
+        value: document.getElementById("neg_text_edit").value,  // 제일 처음 표시할 값
+        display: function(value, sourceData) {
+            // check 버튼을 눌렀을 때 값이 수정되었다면 negchange() 함수를 호출한다.
+            if (document.getElementById("neg_text_edit").value != value) {
+                document.getElementById("neg_text_edit").value = value
+                negchange()
+            }
+        }
+    });
+});
+
+
+var popupWindow = null;
+function centeredPopup(url,winName,w,h,scroll){
+LeftPosition = (screen.width) ? (screen.width-w)/2 : 0;
+TopPosition = (screen.height) ? (screen.height-h)/2 : 0;
+settings =
+'height='+h+',width='+w+',top='+TopPosition+',left='+LeftPosition+',scrollbars='+scroll+',resizable'
+popupWindow = window.open(url,winName,settings)
+}
+
+</script>
+
+</head>
+{#style="width:100vw;height:100vh;"#}
+<body onload="onLoadBody()">
+
+{#style="width: 100rem; height:100rem; margin-top:1rem;"#}
+<div class="container-fluid" style="margin-top: 1rem">
+<!-- user_id 입력창 -->
+<form id="form_user_id" method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="row align-items-center">
+        <div class="col text-right">
+            <div>
+                <p><a href="{% url 'help'%}" onclick="centeredPopup(this.href,'myWindow','700','300','yes');return false">help</a>
+                &nbsp;<a href="{% url 'account'%}" style="font-weight: bolder;">account</a>
+                &nbsp;<a href="{% url 'logout'%}" style="font-weight: bolder;">logout</a></p>
+            </div>
+        </div>
+    </div>
+    <div class="row align-items-center">
+        <div class="col">
+    <h6 style="display: inline-block">&nbspUser ID :&nbsp;</h6><p style="display: inline-block"> {{ user_id }}</p>
+        </div>
+    </div>
+    <div class="row align-items-center">
+        <div class="col">
+            <h6 style="display: inline-block">&nbspAuthor ID :&nbsp;</h6><p style="display: inline-block"> {{ data.author_id }}</p>
+        </div>
+    </div>
+    <input type="hidden" id="next_type" name="next_type" value="">
+    <input type="hidden" id="rand_order" name="rand_order" value="{{ data.rand_order }}">
+    <input type="hidden" id="user_key" name="user_key" value="{{ data.user_key }}">
+    <input type="hidden" id="id" name="id" value="{{ data.id }}">
+
+
+    <div class="col">
+        <div class="progress">
+            <div class="progress-bar" role="progressbar" aria-valuenow="{{ progress }}" aria-valuemin="0" aria-valuemax="100" style="width:{{ progress }}%;">
+            <span class="justify-content-center d-flex position-absolute w-100" style="color: black;">
+                {{ progress }}% complete
+            </span>
+            </div>
+        </div>
+    </div>
+</form>
+<br>
+  <div class="row align-items-center">
+    <div class="col-6">
+        <h5 style="text-align: center;">Positive experience</h5>
+    </div>
+    <div class="col-6">
+        <h5 style="text-align: center;">Negative experience</h5>
+    </div>
+  </div>
+  <div class="row align-items-center">
+    <div class="col-6">
+        <div class="card bg-light mb-3" style="height: 15rem">
+              <div class="card-header">Text</div>
+              <div class="card-body" style="overflow-y: auto;">
+                <p class="card-text">
+                    {{ data.pos_text }}
+                </p>
+              </div>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="card bg-light mb-3" style="height: 15rem">
+              <div class="card-header">Text</div>
+              <div class="card-body" style="overflow-y: auto;">
+                <p class="card-text">
+                    {{ data.neg_text }}
+                </p>
+              </div>
+        </div>
+    </div>
+  </div>
+  <div class="row align-items-center">
+    <div class="col-6">
+        <div class="card bg-light mb-3" style="height: 15rem">
+              <div class="card-header">Tokenized text &nbsp
+                  <button onclick="posdefault()"id="pos_default" type="button" class="btn btn-outline-secondary">default</button>
+                  <button id="pos_text_edit_button" class="btn btn-secondary">edit</button>
+                  {% if data.pos_text_norm_edited %}
+                      <input type="text" id="pos_text_edit" name="pos_text_edit" value="{{ data.pos_text_norm_edited }}" hidden>
+                  {% else %}
+                      <input type="text" id="pos_text_edit" name="pos_text_edit" value="{{ data.pos_text_norm }}" hidden>
+                  {% endif %}
+              </div>
+              <div class="card-body" style="overflow-y: auto;">
+                <p class="card-text" id="pos_keyword_button">
+                    {% if data.pos_text_norm_edited %}
+                        {% for word in data.pos_text_norm_edited_split %}
+                            {% if forloop.counter in data.pos_word_num_split %}
+                                <button type="button" class="btn btn-outline-info active" id="pos_{{ forloop.counter }}" name="positive_words" value="{{ word }}">{{ word }}</button>
+                            {% else %}
+                                <button type="button" class="btn btn-outline-info" id="pos_{{ forloop.counter }}" name="positive_words" value="{{ word }}">{{ word }}</button>
+                            {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        {% for word in data.pos_text_norm_split %}
+                            {% if forloop.counter in data.pos_word_num_split%}
+                                <button type="button" class="btn btn-outline-info active" id="pos_{{ forloop.counter }}" name="positive_words" value="{{ word }}">{{ word }}</button>
+                            {% else %}
+                                <button type="button" class="btn btn-outline-info" id="pos_{{ forloop.counter }}" name="positive_words" value="{{ word }}">{{ word }}</button>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                </p>
+              </div>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="card bg-light mb-3"style="height: 15rem">
+              <div class="card-header">Tokenized text&nbsp;&nbsp
+                  <button onclick="negdefault()" id ="neg_default" type="button" class="btn btn-outline-secondary">default</button>
+                  <button id="neg_text_edit_button" class="btn btn-secondary">edit</button>
+                  {% if data.neg_text_norm_edited %}
+                      <input type="text" id="neg_text_edit" name="neg_text_edit" value="{{ data.neg_text_norm_edited }}" hidden>
+                  {% else %}
+                      <input type="text" id="neg_text_edit" name="neg_text_edit" value="{{ data.neg_text_norm }}" hidden>
+                  {% endif %}
+              </div>
+              <div class="card-body" style="overflow-y: auto;">
+                <p class="card-text" id="neg_keyword_button">
+                    {% if data.neg_text_norm_edited %}
+                        {% for word in data.neg_text_norm_edited_split %}
+                            {% if forloop.counter in data.neg_word_num_split %}
+                                <button type="button" class="btn btn-outline-info active" id="neg_{{ forloop.counter }}" name="negative_words" value="{{ word }}">{{ word }}</button>
+                            {% else %}
+                                <button type="button" class="btn btn-outline-info" id="neg_{{ forloop.counter }}" name="negative_words" value="{{ word }}">{{ word }}</button>
+                            {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        {% for word in data.neg_text_norm_split %}
+                            {% if forloop.counter in data.neg_word_num_split %}
+                                <button type="button" class="btn btn-outline-info active" id="neg_{{ forloop.counter }}" name="negative_words" value="{{ word }}">{{ word }}</button>
+                            {% else %}
+                                <button type="button" class="btn btn-outline-info" id="neg_{{ forloop.counter }}" name="negative_words" value="{{ word }}">{{ word }}</button>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                </p>
+              </div>
+        </div>
+    </div>
+  </div>
+  <div class="row align-items-center">
+    <div class="col-6">
+        <div class="card bg-light mb-3">
+          <div class="card-header">Selected keywords</div>
+          <div class="card-body" style="overflow-y: auto;">
+            <div id="selected_positive_words">
+                {% for word in data.pos_keyword_split %}
+                    {% if word %}
+                    <button type="button" class="btn btn-outline-primary" value="{{ word }}">{{ word }}</button>
+                    {% else %}
+                    {% endif %}
+                {% endfor %}
+            </div>
+          </div>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="card bg-light mb-3">
+          <div class="card-header">Selected keywords</div>
+          <div class="card-body" style="overflow-y: auto;">
+            <div id="selected_negative_words">
+                {% for word in data.neg_keyword_split %}
+                    {% if word %}
+                    <button type="button" class="btn btn-outline-primary" value="{{ word }}">{{ word }}</button>
+                    {% else %}
+                    {% endif %}
+                {% endfor %}
+            </div>
+          </div>
+        </div>
+    </div>
+  </div>
+    <Br>
+<div class="row justify-content-center">
+<nav aria-label="Page navigation example">
+  <ul class="pagination justify-content-center">
+    <li style="width:5rem;" class="page-item"><a style="display: flex; align-items: center; justify-content: center;" class="page-link" href="javascript:void(0)" onclick=onClickPrevious()>Previous</a></li>
+    <li style="width:5rem;" class="page-item"><a style="display: flex; align-items: center; justify-content: center;" class="page-link" href="javascript:void(0)" onclick=onClickNext()><span class="popup">Next<span class="popuptext" id="popup_next">A Simple Popup!</span></span></a></li>
+  </ul>
+</nav>
+</div>
+</div>
+<hr>
+<br>
+<div class="container-fluid">
+  <div class="row align-items-center">
+    <div class="col-6">
+        <div class="card bg-light mb-3">
+            <div class="card-header">All users' recommendation</div>
+                <div class="card-body" style="height:19rem">
+                    <div class="results">
+                        <i class="fas fa-square"style="color:darkred"></i>&nbsp;All users' selection&nbsp;&nbsp;
+                    <div class="bar-chart">
+                        {% for x in all_pos_fullrange %}
+                        {% if all_pos_keyword_value|index:x in all_pos_rec_value %}
+                    <div class="bar" style="height:{{ all_pos_all_per|index:x }}%; background-color: darkred;">
+                    {% else %}
+                    <div class="bar" style="height:{{ all_pos_all_per|index:x }}%;">
+                    {% endif %}
+                        <div class="bar-tooltip">
+                        {{ all_pos_keyword_n|index:x }}
+                        </div>
+                    </div>
+                    {% endfor %}
+                    </div>
+                        <div class="bar-chart"style="height: 12.5rem">
+                            {% for x in all_pos_fullrange %}
+                                <div class="bar" style="height:0">
+                                    <div class="bar-tooltip2">
+                                        {{ all_pos_keyword_value|index:x }}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <div class="col-6">
+        <div class="card bg-light mb-3">
+          <div class="card-header">All users' recommendation</div>
+            <div class="card-body" style="height: 19rem">
+                <div class="results">
+                        <i class="fas fa-square"style="color:darkred"></i>&nbsp;All users' selection&nbsp;&nbsp;
+                    <div class="bar-chart">
+                        {% for x in all_neg_fullrange %}
+                        {% if all_neg_keyword_value|index:x in all_neg_rec_value %}
+                    <div class="bar" style="height:{{ all_neg_all_per|index:x }}%; background-color: darkred;">
+                    {% else %}
+                    <div class="bar" style="height:{{ all_neg_all_per|index:x }}%;">
+                    {% endif %}
+                        <div class="bar-tooltip">
+                        {{ all_neg_keyword_n|index:x }}
+                        </div>
+                    </div>
+                    {% endfor %}
+                    </div>
+                        <div class="bar-chart"style="height: 12.5rem">
+                            {% for x in all_neg_fullrange %}
+                                <div class="bar" style="height:0">
+                                    <div class="bar-tooltip2">
+                                        {{ all_neg_keyword_value|index:x }}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+  <div class="row align-items-center">
+    <div class="col-6">
+        <div class="card bg-light mb-3">
+            <div class="card-header">Current user's recommendation</div>
+                <div class="card-body" style="height:19rem">
+                    <div class="results">
+                        <i class="fas fa-square"style="color:darkgreen"></i>&nbsp;{{data.user_id}}'s selection&nbsp;&nbsp;
+                    <div class="bar-chart">
+                        {% for x in pos_fullrange %}
+                        {% if pos_keyword_value|index:x in pos_rec_value %}
+                    <div class="bar" style="height:{{ pos_all_per|index:x }}%; background-color: darkgreen;">
+                    {% else %}
+                    <div class="bar" style="height:{{ pos_all_per|index:x }}%;">
+                    {% endif %}
+                        <div class="bar-tooltip">
+                        {{ pos_keyword_n|index:x }}
+                        </div>
+                    </div>
+                    {% endfor %}
+                    </div>
+                        <div class="bar-chart"style="height: 12.5rem">
+                            {% for x in pos_fullrange %}
+                                <div class="bar" style="height:0">
+                                    <div class="bar-tooltip2">
+                                        {{ pos_keyword_value|index:x }}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+      <div class="col-6">
+        <div class="card bg-light mb-3">
+          <div class="card-header">Current user's recommendation</div>
+          <div class="card-body" style="height: 19rem">
+                <div class="results">
+                <i class="fas fa-square"style="color:darkgreen"></i>&nbsp;{{data.user_id}}'s selection
+                    <div class="bar-chart">
+                        {% for x in neg_fullrange %}
+                        {% if neg_keyword_value|index:x in neg_rec_value %}
+                    <div class="bar" style="height:{{ neg_all_per|index:x }}%; background-color: darkgreen;">
+                    {% else %}
+                    <div class="bar" style="height:{{ neg_all_per|index:x }}%;">
+                    {% endif %}
+                        <div class="bar-tooltip">
+                        {{ neg_keyword_n|index:x }}
+                        </div>
+                    </div>
+                    {% endfor %}
+                    </div>
+                        <div class="bar-chart"style="height: 12.5rem">
+                            {% for x in neg_fullrange %}
+                                <div class="bar" style="height:0">
+                                    <div class="bar-tooltip2">
+                                        {{ neg_keyword_value|index:x }}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+          </div>
+        </div>
+      </div>
+  <div class="row align-items-center">
+      <div class="col-6">
+        <div class="card bg-light mb-3">
+            <div class="card-header">Most character similar user's recommendation</div>
+                <div class="card-body" style="height:19rem">
+                    <div class="results">
+                        <i class="fas fa-square"style="color:goldenrod"></i>&nbsp;{{similarity_max}}'s selection (similarity rate : {{ char_similarity }})
+                    <div class="bar-chart">
+                        {% for x in sim_pos_fullrange %}
+                        {% if sim_pos_keyword_value|index:x in sim_pos_rec_value %}
+                    <div class="bar" style="height:{{ sim_pos_all_per|index:x }}%; background-color: goldenrod;">
+                    {% else %}
+                    <div class="bar" style="height:{{ sim_pos_all_per|index:x }}%;">
+                    {% endif %}
+                        <div class="bar-tooltip">
+                        {{ sim_pos_keyword_n|index:x }}
+                        </div>
+                    </div>
+                    {% endfor %}
+                    </div>
+                        <div class="bar-chart"style="height: 12.5rem">
+                            {% for x in sim_pos_fullrange %}
+                                <div class="bar" style="height:0">
+                                    <div class="bar-tooltip2">
+                                        {{ sim_pos_keyword_value|index:x }}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+      <div class="col-6">
+        <div class="card bg-light mb-3">
+          <div class="card-header">Most character similar user's recommendation</div>
+          <div class="card-body" style="height: 19rem">
+                <div class="results">
+                <i class="fas fa-square"style="color:goldenrod"></i>&nbsp;{{similarity_max}}'s selection (similarity rate : {{ char_similarity }})
+                    <div class="bar-chart">
+                        {% for x in sim_neg_fullrange %}
+                        {% if sim_neg_keyword_value|index:x in sim_neg_rec_value %}
+                    <div class="bar" style="height:{{ sim_neg_all_per|index:x }}%; background-color: goldenrod;">
+                    {% else %}
+                    <div class="bar" style="height:{{ sim_neg_all_per|index:x }}%;">
+                    {% endif %}
+                        <div class="bar-tooltip">
+                        {{ sim_neg_keyword_n|index:x }}
+                        </div>
+                    </div>
+                    {% endfor %}
+                    </div>
+                        <div class="bar-chart"style="height: 12.5rem">
+                            {% for x in sim_neg_fullrange %}
+                                <div class="bar" style="height:0">
+                                    <div class="bar-tooltip2">
+                                        {{ sim_neg_keyword_value|index:x }}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+          </div>
+        </div>
+      </div>
+  </div>
+  </div>
+</body>
+</html>

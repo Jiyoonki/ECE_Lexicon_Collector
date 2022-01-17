@@ -1,0 +1,1268 @@
+
+<!DOCTYPE html>
+{% load static %}
+{% load custom_tags %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ECE-LexiconCollector</title>
+
+    <link rel="stylesheet" href="//unpkg.com/bootstrap@4/dist/css/bootstrap.min.css">
+    <script src='//unpkg.com/jquery@3/dist/jquery.min.js'></script>
+    <script src='//unpkg.com/popper.js@1/dist/umd/popper.min.js'></script>
+    <script src='//unpkg.com/bootstrap@4/dist/js/bootstrap.min.js'></script>
+    <link rel="Stylesheet" href="{% static 'tokenizer/main.css' %}">
+
+</head>
+
+
+<style>
+
+img {width:100%;}
+</style>
+
+
+<script>
+function validity_check() {
+    var user_id = document.getElementById("user_id").value.trim()
+    var name = document.getElementById("name").value.trim()
+    var password1 = document.getElementById("password1").value
+    var password2 = document.getElementById("password2").value
+    var mobile = document.getElementById("mobile").value.trim()
+    var email = document.getElementById("email").value.trim()
+    var birth = document.getElementById("birth").value.trim()
+    var gender = document.getElementById("gender").value.trim()
+    var positive_comment = document.getElementById("positive_comment").value.trim().replace(/[\n\r]/g, ' ')
+    var negative_comment = document.getElementById("negative_comment").value.trim().replace(/[\n\r]/g, ' ')
+    var pos_emo1 = document.getElementById("pos_emo1").value.trim()
+    var pos_emo1_w = document.getElementById("pos_emo1_w").value.trim()
+    var pos_emo2 = document.getElementById("pos_emo2").value.trim()
+    var pos_emo2_w = document.getElementById("pos_emo2_w").value.trim()
+    var pos_emo3 = document.getElementById("pos_emo3").value.trim()
+    var pos_emo3_w = document.getElementById("pos_emo3_w").value.trim()
+    var pos_emo4 = document.getElementById("pos_emo4").value.trim()
+    var pos_emo4_w = document.getElementById("pos_emo4_w").value.trim()
+    var pos_emo5 = document.getElementById("pos_emo5").value.trim()
+    var pos_emo5_w = document.getElementById("pos_emo5_w").value.trim()
+    var neg_emo1 = document.getElementById("neg_emo1").value.trim()
+    var neg_emo1_w = document.getElementById("neg_emo1_w").value.trim()
+    var neg_emo2 = document.getElementById("neg_emo2").value.trim()
+    var neg_emo2_w = document.getElementById("neg_emo2_w").value.trim()
+    var neg_emo3 = document.getElementById("neg_emo3").value.trim()
+    var neg_emo3_w = document.getElementById("neg_emo3_w").value.trim()
+    var neg_emo4 = document.getElementById("neg_emo4").value.trim()
+    var neg_emo4_w = document.getElementById("neg_emo4_w").value.trim()
+    var neg_emo5 = document.getElementById("neg_emo5").value.trim()
+    var neg_emo5_w = document.getElementById("neg_emo5_w").value.trim()
+    var op_1 = document.getElementById("op_1").value.trim()
+    var op_2 = document.getElementById("op_2").value.trim()
+    var op_3 = document.getElementById("op_3").value.trim()
+    var con_1 = document.getElementById("con_1").value.trim()
+    var con_2 = document.getElementById("con_2").value.trim()
+    var con_3 = document.getElementById("con_3").value.trim()
+    var neuro_1 = document.getElementById("neuro_1").value.trim()
+    var neuro_2 = document.getElementById("neuro_2").value.trim()
+    var neuro_3 = document.getElementById("neuro_3").value.trim()
+    var extra_1 = document.getElementById("extra_1").value.trim()
+    var extra_2 = document.getElementById("extra_2").value.trim()
+    var extra_3 = document.getElementById("extra_3").value.trim()
+    var agree_1 = document.getElementById("agree_1").value.trim()
+    var agree_2 = document.getElementById("agree_2").value.trim()
+    var agree_3 = document.getElementById("agree_3").value.trim()
+
+
+    var user_id_valid = false
+    var name_valid = false
+    var password1_valid = false
+    var password2_valid = false
+    var mobile_valid = false
+    var email_valid = false
+    var birth_valid = false
+    var gender_valid = false
+    var positive_comment_valid = false
+    var negative_comment_valid = false
+    var pos_emo1_valid = false
+    var pos_emo1_w_valid = false
+    var pos_emo2_valid = false
+    var pos_emo2_w_valid = false
+    var pos_emo3_valid = false
+    var pos_emo3_w_valid = false
+    var pos_emo4_valid = false
+    var pos_emo4_w_valid = false
+    var pos_emo5_valid = false
+    var pos_emo5_w_valid = false
+    var neg_emo1_valid = false
+    var neg_emo1_w_valid = false
+    var neg_emo2_valid = false
+    var neg_emo2_w_valid = false
+    var neg_emo3_valid = false
+    var neg_emo3_w_valid = false
+    var neg_emo4_valid = false
+    var neg_emo4_w_valid = false
+    var neg_emo5_valid = false
+    var neg_emo5_w_valid = false
+    var op_1_valid = false
+    var op_2_valid = false
+    var op_3_valid = false
+    var con_1_valid = false
+    var con_2_valid = false
+    var con_3_valid = false
+    var neuro_1_valid = false
+    var neuro_2_valid = false
+    var neuro_3_valid = false
+    var extra_1_valid = false
+    var extra_2_valid = false
+    var extra_3_valid = false
+    var agree_1_valid = false
+    var agree_2_valid = false
+    var agree_3_valid = false
+
+
+
+    // user_id check
+    var user_id_class = document.getElementById("user_id").classList
+    user_id_class.remove("is-valid", "is-invalid")
+    // 중복된 User ID가 존재하는지 확인하기
+    $.ajax({
+        type: "GET",
+        url: "/ECE-LexiconCollector/signup/user_duplication_check",
+        async: false,
+        data: {user_id: user_id, },
+        success: function(message) {
+            duplicated_user_message = message
+        }
+    });
+    if (user_id.length < 6) {
+        document.getElementById("user_id_invalid").innerHTML = "User ID는 6자 이상이어야 합니다."
+        user_id_class.add("is-invalid")
+    } else if (duplicated_user_message != '') {
+        document.getElementById("user_id_invalid").innerHTML = duplicated_user_message
+        user_id_class.add("is-invalid")
+    } else if (user_id.length > 100) {
+        document.getElementById("user_id_invalid").innerHTML = "It's too long!"
+        user_id_class.add("is-invalid")
+    } else {
+        user_id_class.add("is-valid")
+        user_id_valid = true
+    }
+
+    // name check
+    var name_class = document.getElementById("name").classList
+    name_class.remove("is-valid", "is-invalid")
+    if (name.length < 1) {
+        document.getElementById("name_invalid").innerHTML = "이름을 입력해 주세요.";
+        name_class.add("is-invalid")
+    } else if (name.length > 100) {
+        document.getElementById("name_invalid").innerHTML = "It's too long!"
+        name_class.add("is-invalid")
+    } else {
+        name_class.add("is-valid")
+        name_valid = true
+    }
+
+    // password check
+    var password1_class = document.getElementById("password1").classList
+    var password2_class = document.getElementById("password2").classList
+    password1_class.remove("is-valid", "is-invalid")
+    password2_class.remove("is-valid", "is-invalid")
+    if (/[0-9]/.test(password1) != true || /[a-zA-Z]/.test(password1) != true || password1.length < 8) {
+        document.getElementById("password1_invalid").innerHTML = "영문자, 숫자를 포함한 8자리 이상의 비밀번호를 입력해 주세요.";
+        password1_class.add("is-invalid");
+    } else if (password1 != password2) {
+        document.getElementById("password1_invalid").innerHTML = "비밀번호가 일치하지 않습니다.";
+        password1_class.add("is-invalid");
+        password2_class.add("is-invalid");
+    } else if (password1.length > 100) {
+        document.getElementById("password1_invalid").innerHTML = "It's too long!"
+        password1_class.add("is-invalid");
+        password2_class.add("is-invalid");
+    } else {
+        password1_class.add("is-valid");
+        password2_class.add("is-valid");
+        password1_valid = true
+        password2_valid = true
+    }
+
+    // mobile check
+    var mobile_class = document.getElementById("mobile").classList
+    mobile_class.remove("is-valid", "is-invalid")
+    if (mobile != mobile.replace(/[^0-9]/g, '')) {
+        document.getElementById("mobile_invalid").innerHTML = "전화번호는 숫자만 입력해 주세요.";
+        mobile_class.add("is-invalid")
+    } else if (mobile.length < 9) {
+        document.getElementById("mobile_invalid").innerHTML = "올바른 전화번호를 입력해 주세요.";
+        mobile_class.add("is-invalid")
+    } else if (mobile.length > 100) {
+        document.getElementById("mobile_invalid").innerHTML = "It's too long!"
+        mobile_class.add("is-invalid")
+    } else {
+        mobile_class.add("is-valid")
+        mobile_valid = true
+    }
+
+    // email check
+    var email_class = document.getElementById("email").classList
+    email_class.remove("is-valid", "is-invalid")
+    var email_regex = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i
+    if (email_regex.test(email) != true) {
+        document.getElementById("email_invalid").innerHTML = "올바른 이메일을 입력해 주세요.";
+        email_class.add("is-invalid")
+    } else if (email.length > 100) {
+        document.getElementById("email_invalid").innerHTML = "It's too long!"
+        email_class.add("is-invalid")
+    } else {
+        email_class.add("is-valid")
+        email_valid = true
+    }
+
+    // birth check
+    var birth_class = document.getElementById("birth").classList
+    birth_class.remove("is-valid", "is-invalid")
+    var birth_regex =  /^(19[0-9][0-9]|20\d{2})(0[0-9]|1[0-2])(0[1-9]|[1-2][0-9]|3[0-1])$/
+    if (birth_regex.test(birth) != true) {
+        document.getElementById("birth_invalid").innerHTML = "올바른 생년월일을 입력해 주세요. (ex. 19990101)";
+        birth_class.add("is-invalid")
+    } else if (birth.length > 100) {
+        document.getElementById("birth_invalid").innerHTML = "It's too long!"
+        birth_class.add("is-invalid")
+    } else {
+        birth_class.add("is-valid")
+        birth_valid = true
+    }
+
+    // gender check
+    var gender_class = document.getElementById("gender").classList
+    gender_class.remove("is-valid", "is-invalid")
+    if (gender != "남" && gender != "여") {
+        document.getElementById("gender_invalid").innerHTML = "성별을 선택해 주세요."
+        gender_class.add("is-invalid")
+    } else {
+        gender_class.add("is-valid")
+        gender_valid = true
+    }
+
+    // positive_comment check
+    var positive_comment_class = document.getElementById("positive_comment").classList
+    positive_comment_class.remove("is-valid", "is-invalid")
+    if (positive_comment.length < 30) {
+        document.getElementById("positive_comment_invalid").innerHTML = "최근에 겪은 긍정적인 경험을 한 가지 입력해 주세요(최소 30자 이상)"
+        positive_comment_class.add("is-invalid")
+    } else if (positive_comment.length > 10000) {
+        document.getElementById("positive_comment_invalid").innerHTML = "It's too long!"
+        positive_comment_class.add("is-invalid")
+    } else {
+        positive_comment_class.add("is-valid")
+        positive_comment_valid = true
+    }
+
+    // negative_comment check
+    var negative_comment_class = document.getElementById("negative_comment").classList
+    negative_comment_class.remove("is-valid", "is-invalid")
+    if (negative_comment.length < 30) {
+        document.getElementById("negative_comment_invalid").innerHTML = "최근에 겪은 부정적인 경험을 한 가지 입력해 주세요(최소 30자 이상)"
+        negative_comment_class.add("is-invalid")
+    } else if (negative_comment.length > 10000) {
+        document.getElementById("negative_comment_invalid").innerHTML = "It's too long!"
+        negative_comment_class.add("is-invalid")
+    } else {
+        negative_comment_class.add("is-valid")
+        negative_comment_valid = true
+    }
+
+    var pos_emo1_class = document.getElementById("pos_emo1").classList
+    pos_emo1_class.remove("is-valid", "is-invalid")
+    if (pos_emo1.length < 1) {
+        document.getElementById("pos_emo1_invalid").innerHTML = "감정을 작성해 주세요.";
+        pos_emo1_class.add("is-invalid")
+    } else if (pos_emo1.length > 20) {
+        document.getElementById("pos_emo1_invalid").innerHTML = "It's too long!"
+        pos_emo1_class.add("is-invalid")
+    } else {
+        pos_emo1_class.add("is-valid")
+        pos_emo1_valid = true
+    }
+
+    var pos_emo2_class = document.getElementById("pos_emo2").classList
+    pos_emo2_class.remove("is-valid", "is-invalid")
+    if (pos_emo2.length < 1) {
+        document.getElementById("pos_emo2_invalid").innerHTML = "감정을 작성해 주세요.";
+        pos_emo2_class.add("is-invalid")
+    } else if (pos_emo2.length > 20) {
+        document.getElementById("pos_emo2_invalid").innerHTML = "It's too long!"
+        pos_emo2_class.add("is-invalid")
+    } else {
+        pos_emo2_class.add("is-valid")
+        pos_emo2_valid = true
+    }
+
+    var pos_emo3_class = document.getElementById("pos_emo3").classList
+    pos_emo3_class.remove("is-valid", "is-invalid")
+    if (pos_emo3.length < 1) {
+        document.getElementById("pos_emo3_invalid").innerHTML = "감정을 작성해 주세요.";
+        pos_emo3_class.add("is-invalid")
+    } else if (pos_emo3.length > 20) {
+        document.getElementById("pos_emo3_invalid").innerHTML = "It's too long!"
+        pos_emo3_class.add("is-invalid")
+    } else {
+        pos_emo3_class.add("is-valid")
+        pos_emo3_valid = true
+    }
+
+    var pos_emo4_class = document.getElementById("pos_emo4").classList
+    pos_emo4_class.remove("is-valid", "is-invalid")
+    if (pos_emo4.length < 1) {
+        document.getElementById("pos_emo4_invalid").innerHTML = "감정을 작성해 주세요.";
+        pos_emo4_class.add("is-invalid")
+    } else if (pos_emo4.length > 20) {
+        document.getElementById("pos_emo4_invalid").innerHTML = "It's too long!"
+        pos_emo4_class.add("is-invalid")
+    } else {
+        pos_emo4_class.add("is-valid")
+        pos_emo4_valid = true
+    }
+
+    var pos_emo5_class = document.getElementById("pos_emo5").classList
+    pos_emo5_class.remove("is-valid", "is-invalid")
+    if (pos_emo5.length < 1) {
+        document.getElementById("pos_emo5_invalid").innerHTML = "감정을 작성해 주세요.";
+        pos_emo5_class.add("is-invalid")
+    } else if (pos_emo5.length > 20) {
+        document.getElementById("pos_emo5_invalid").innerHTML = "It's too long!"
+        pos_emo5_class.add("is-invalid")
+    } else {
+        pos_emo5_class.add("is-valid")
+        pos_emo5_valid = true
+    }
+
+    var neg_emo1_class = document.getElementById("neg_emo1").classList
+    neg_emo1_class.remove("is-valid", "is-invalid")
+    if (neg_emo1.length < 1) {
+        document.getElementById("neg_emo1_invalid").innerHTML = "감정을 작성해 주세요.";
+        neg_emo1_class.add("is-invalid")
+    } else if (neg_emo1.length > 20) {
+        document.getElementById("neg_emo1_invalid").innerHTML = "It's too long!"
+        neg_emo1_class.add("is-invalid")
+    } else {
+        neg_emo1_class.add("is-valid")
+        neg_emo1_valid = true
+    }
+
+    var neg_emo2_class = document.getElementById("neg_emo2").classList
+    neg_emo2_class.remove("is-valid", "is-invalid")
+    if (neg_emo2.length < 1) {
+        document.getElementById("neg_emo2_invalid").innerHTML = "감정을 작성해 주세요.";
+        neg_emo2_class.add("is-invalid")
+    } else if (neg_emo2.length > 20) {
+        document.getElementById("neg_emo2_invalid").innerHTML = "It's too long!"
+        neg_emo2_class.add("is-invalid")
+    } else {
+        neg_emo2_class.add("is-valid")
+        neg_emo2_valid = true
+    }
+
+    var neg_emo3_class = document.getElementById("neg_emo3").classList
+    neg_emo3_class.remove("is-valid", "is-invalid")
+    if (neg_emo3.length < 1) {
+        document.getElementById("neg_emo3_invalid").innerHTML = "감정을 작성해 주세요.";
+        neg_emo3_class.add("is-invalid")
+    } else if (neg_emo3.length > 20) {
+        document.getElementById("neg_emo3_invalid").innerHTML = "It's too long!"
+        neg_emo3_class.add("is-invalid")
+    } else {
+        neg_emo3_class.add("is-valid")
+        neg_emo3_valid = true
+    }
+
+    var neg_emo4_class = document.getElementById("neg_emo4").classList
+    neg_emo4_class.remove("is-valid", "is-invalid")
+    if (neg_emo4.length < 1) {
+        document.getElementById("neg_emo4_invalid").innerHTML = "감정을 작성해 주세요.";
+        neg_emo4_class.add("is-invalid")
+    } else if (neg_emo4.length > 20) {
+        document.getElementById("neg_emo4_invalid").innerHTML = "It's too long!"
+        neg_emo4_class.add("is-invalid")
+    } else {
+        neg_emo4_class.add("is-valid")
+        neg_emo4_valid = true
+    }
+
+    var neg_emo5_class = document.getElementById("neg_emo5").classList
+    neg_emo5_class.remove("is-valid", "is-invalid")
+    if (neg_emo5.length < 1) {
+        document.getElementById("neg_emo5_invalid").innerHTML = "감정을 작성해 주세요.";
+        neg_emo5_class.add("is-invalid")
+    } else if (neg_emo5.length > 20) {
+        document.getElementById("neg_emo5_invalid").innerHTML = "It's too long!"
+        neg_emo5_class.add("is-invalid")
+    } else {
+        neg_emo5_class.add("is-valid")
+        neg_emo5_valid = true
+    }
+
+    var pos_emo1_w_class = document.getElementById("pos_emo1_w").classList
+    pos_emo1_w_class.remove("is-valid", "is-invalid")
+    if (pos_emo1_w == "감정1 느낀 정도") {
+        document.getElementById("pos_emo1_w_invalid").innerHTML = "감정강도를 선택해 주세요."
+        pos_emo1_w_class.add("is-invalid")
+    } else {
+        pos_emo1_w_class.add("is-valid")
+        pos_emo1_w_valid = true
+    }
+
+    var pos_emo2_w_class = document.getElementById("pos_emo2_w").classList
+    pos_emo2_w_class.remove("is-valid", "is-invalid")
+    if (pos_emo2_w == "감정2 느낀 정도") {
+        document.getElementById("pos_emo2_w_invalid").innerHTML = "감정강도를 선택해 주세요."
+        pos_emo2_w_class.add("is-invalid")
+    } else {
+        pos_emo2_w_class.add("is-valid")
+        pos_emo2_w_valid = true
+    }
+
+    var pos_emo3_w_class = document.getElementById("pos_emo3_w").classList
+    pos_emo3_w_class.remove("is-valid", "is-invalid")
+    if (pos_emo3_w == "감정3 느낀 정도") {
+        document.getElementById("pos_emo3_w_invalid").innerHTML = "감정강도를 선택해 주세요."
+        pos_emo3_w_class.add("is-invalid")
+    } else {
+        pos_emo3_w_class.add("is-valid")
+        pos_emo3_w_valid = true
+    }
+
+    var pos_emo4_w_class = document.getElementById("pos_emo4_w").classList
+    pos_emo4_w_class.remove("is-valid", "is-invalid")
+    if (pos_emo4_w == "감정4 느낀 정도") {
+        document.getElementById("pos_emo4_w_invalid").innerHTML = "감정강도를 선택해 주세요."
+        pos_emo4_w_class.add("is-invalid")
+    } else {
+        pos_emo4_w_class.add("is-valid")
+        pos_emo4_w_valid = true
+    }
+
+    var pos_emo5_w_class = document.getElementById("pos_emo5_w").classList
+    pos_emo5_w_class.remove("is-valid", "is-invalid")
+    if (pos_emo5_w == "감정5 느낀 정도") {
+        document.getElementById("pos_emo5_w_invalid").innerHTML = "감정강도를 선택해 주세요."
+        pos_emo5_w_class.add("is-invalid")
+    } else {
+        pos_emo5_w_class.add("is-valid")
+        pos_emo5_w_valid = true
+    }
+
+    var neg_emo1_w_class = document.getElementById("neg_emo1_w").classList
+    neg_emo1_w_class.remove("is-valid", "is-invalid")
+    if (neg_emo1_w == "감정1 느낀 정도") {
+        document.getElementById("neg_emo1_w_invalid").innerHTML = "감정강도를 선택해 주세요."
+        neg_emo1_w_class.add("is-invalid")
+    } else {
+        neg_emo1_w_class.add("is-valid")
+        neg_emo1_w_valid = true
+    }
+
+    var neg_emo2_w_class = document.getElementById("neg_emo2_w").classList
+    neg_emo2_w_class.remove("is-valid", "is-invalid")
+    if (neg_emo2_w == "감정2 느낀 정도") {
+        document.getElementById("neg_emo2_w_invalid").innerHTML = "감정강도를 선택해 주세요."
+        neg_emo2_w_class.add("is-invalid")
+    } else {
+        neg_emo2_w_class.add("is-valid")
+        neg_emo2_w_valid = true
+    }
+
+    var neg_emo3_w_class = document.getElementById("neg_emo3_w").classList
+    neg_emo3_w_class.remove("is-valid", "is-invalid")
+    if (neg_emo3_w == "감정3 느낀 정도") {
+        document.getElementById("neg_emo3_w_invalid").innerHTML = "감정강도를 선택해 주세요."
+        neg_emo3_w_class.add("is-invalid")
+    } else {
+        neg_emo3_w_class.add("is-valid")
+        neg_emo3_w_valid = true
+    }
+
+    var neg_emo4_w_class = document.getElementById("neg_emo4_w").classList
+    neg_emo4_w_class.remove("is-valid", "is-invalid")
+    if (neg_emo4_w == "감정4 느낀 정도") {
+        document.getElementById("neg_emo4_w_invalid").innerHTML = "감정강도를 선택해 주세요."
+        neg_emo4_w_class.add("is-invalid")
+    } else {
+        neg_emo4_w_class.add("is-valid")
+        neg_emo4_w_valid = true
+    }
+
+    var neg_emo5_w_class = document.getElementById("neg_emo5_w").classList
+    neg_emo5_w_class.remove("is-valid", "is-invalid")
+    if (neg_emo5_w == "감정5 느낀 정도") {
+        document.getElementById("neg_emo5_w_invalid").innerHTML = "감정강도를 선택해 주세요."
+        neg_emo5_w_class.add("is-invalid")
+    } else {
+        neg_emo5_w_class.add("is-valid")
+        neg_emo5_w_valid = true
+    }
+
+    var op_1_class = document.getElementById("op_1").classList
+    op_1_class.remove("is-valid", "is-invalid")
+    if (op_1 == "창의적인") {
+        document.getElementById("op_1_invalid").innerHTML = "특성점수를 선택해 주세요."
+        op_1_class.add("is-invalid")
+    } else {
+        op_1_class.add("is-valid")
+        op_1_valid = true
+    }
+
+    var op_2_class = document.getElementById("op_2").classList
+    op_2_class.remove("is-valid", "is-invalid")
+    if (op_2 == "독창적이며 새로운 생각을 잘 떠올리는") {
+        document.getElementById("op_2_invalid").innerHTML = "특성점수를 선택해 주세요."
+        op_2_class.add("is-invalid")
+    } else {
+        op_2_class.add("is-valid")
+        op_2_valid = true
+    }
+
+    var op_3_class = document.getElementById("op_3").classList
+    op_3_class.remove("is-valid", "is-invalid")
+    if (op_3 == "활발한 상상력을 가진") {
+        document.getElementById("op_3_invalid").innerHTML = "특성점수를 선택해 주세요."
+        op_3_class.add("is-invalid")
+    } else {
+        op_3_class.add("is-valid")
+        op_3_valid = true
+    }
+
+    var con_1_class = document.getElementById("con_1").classList
+    con_1_class.remove("is-valid", "is-invalid")
+    if (con_1 == "일을 완벽하게 하는") {
+        document.getElementById("con_1_invalid").innerHTML = "특성점수를 선택해 주세요."
+        con_1_class.add("is-invalid")
+    } else {
+        con_1_class.add("is-valid")
+        con_1_valid = true
+    }
+
+    var con_2_class = document.getElementById("con_2").classList
+    con_2_class.remove("is-valid", "is-invalid")
+    if (con_2 == "일을 능률적으로 하는") {
+        document.getElementById("con_2_invalid").innerHTML = "특성점수를 선택해 주세요."
+        con_2_class.add("is-invalid")
+    } else {
+        con_2_class.add("is-valid")
+        con_2_valid = true
+    }
+
+    var con_3_class = document.getElementById("con_3").classList
+    con_3_class.remove("is-valid", "is-invalid")
+    if (con_3 == "믿을만하게 일을 하는") {
+        document.getElementById("con_3_invalid").innerHTML = "특성점수를 선택해 주세요."
+        con_3_class.add("is-invalid")
+    } else {
+        con_3_class.add("is-valid")
+        con_3_valid = true
+    }
+
+    var neuro_1_class = document.getElementById("neuro_1").classList
+    neuro_1_class.remove("is-valid", "is-invalid")
+    if (neuro_1 == "쉽게 침울해 지는") {
+        document.getElementById("neuro_1_invalid").innerHTML = "특성점수를 선택해 주세요."
+        neuro_1_class.add("is-invalid")
+    } else {
+        neuro_1_class.add("is-valid")
+        neuro_1_valid = true
+    }
+
+    var neuro_2_class = document.getElementById("neuro_2").classList
+    neuro_2_class.remove("is-valid", "is-invalid")
+    if (neuro_2 == "우울한") {
+        document.getElementById("neuro_2_invalid").innerHTML = "특성점수를 선택해 주세요."
+        neuro_2_class.add("is-invalid")
+    } else {
+        neuro_2_class.add("is-valid")
+        neuro_2_valid = true
+    }
+
+    var neuro_3_class = document.getElementById("neuro_3").classList
+    neuro_3_class.remove("is-valid", "is-invalid")
+    if (neuro_3 == "걱정을 많이 하는") {
+        document.getElementById("neuro_3_invalid").innerHTML = "특성점수를 선택해 주세요."
+        neuro_3_class.add("is-invalid")
+    } else {
+        neuro_3_class.add("is-valid")
+        neuro_3_valid = true
+    }
+
+    var extra_1_class = document.getElementById("extra_1").classList
+    extra_1_class.remove("is-valid", "is-invalid")
+    if (extra_1 == "조용한") {
+        document.getElementById("extra_1_invalid").innerHTML = "특성점수를 선택해 주세요."
+        extra_1_class.add("is-invalid")
+    } else {
+        extra_1_class.add("is-valid")
+        extra_1_valid = true
+    }
+
+    var extra_2_class = document.getElementById("extra_2").classList
+    extra_2_class.remove("is-valid", "is-invalid")
+    if (extra_2 == "수다스러운") {
+        document.getElementById("extra_2_invalid").innerHTML = "특성점수를 선택해 주세요."
+        extra_2_class.add("is-invalid")
+    } else {
+        extra_2_class.add("is-valid")
+        extra_2_valid = true
+    }
+
+    var extra_3_class = document.getElementById("extra_3").classList
+    extra_3_class.remove("is-valid", "is-invalid")
+    if (extra_3 == "외향적이며 사교적인") {
+        document.getElementById("extra_3_invalid").innerHTML = "특성점수를 선택해 주세요."
+        extra_3_class.add("is-invalid")
+    } else {
+        extra_3_class.add("is-valid")
+        extra_3_valid = true
+    }
+
+    var agree_1_class = document.getElementById("agree_1").classList
+    agree_1_class.remove("is-valid", "is-invalid")
+    if (agree_1 == "사려깊고 거의 모든 사람에게 친절한") {
+        document.getElementById("agree_1_invalid").innerHTML = "특성점수를 선택해 주세요."
+        agree_1_class.add("is-invalid")
+    } else {
+        agree_1_class.add("is-valid")
+        agree_1_valid = true
+    }
+
+    var agree_2_class = document.getElementById("agree_2").classList
+    agree_2_class.remove("is-valid", "is-invalid")
+    if (agree_2 == "다른 사람을 잘 도와주며 이타적인") {
+        document.getElementById("agree_2_invalid").innerHTML = "특성점수를 선택해 주세요."
+        agree_2_class.add("is-invalid")
+    } else {
+        agree_2_class.add("is-valid")
+        agree_2_valid = true
+    }
+
+    var agree_3_class = document.getElementById("agree_3").classList
+    agree_3_class.remove("is-valid", "is-invalid")
+    if (agree_3 == "용서를 잘 하는") {
+        document.getElementById("agree_3_invalid").innerHTML = "특성점수를 선택해 주세요."
+        agree_3_class.add("is-invalid")
+    } else {
+        agree_3_class.add("is-valid")
+        agree_3_valid = true
+    }
+
+
+
+    // 모두 정상이면 submit
+    if (user_id_valid &&
+        name_valid &&
+        password1_valid &&
+        password2_valid &&
+        mobile_valid &&
+        email_valid &&
+        birth_valid &&
+        gender_valid &&
+        positive_comment_valid &&
+        negative_comment_valid &&
+        pos_emo1_valid &&
+        pos_emo1_w_valid &&
+        pos_emo2_valid &&
+        pos_emo2_w_valid &&
+        pos_emo3_valid &&
+        pos_emo3_w_valid &&
+        pos_emo4_valid &&
+        pos_emo4_w_valid &&
+        pos_emo5_valid &&
+        pos_emo5_w_valid &&
+        neg_emo1_valid &&
+        neg_emo1_w_valid &&
+        neg_emo2_valid &&
+        neg_emo2_w_valid &&
+        neg_emo3_valid &&
+        neg_emo3_w_valid &&
+        neg_emo4_valid &&
+        neg_emo4_w_valid &&
+        neg_emo5_valid &&
+        neg_emo5_w_valid &&
+        op_1_valid &&
+        op_2_valid &&
+        op_3_valid &&
+        con_1_valid &&
+        con_2_valid &&
+        con_3_valid &&
+        neuro_1_valid &&
+        neuro_2_valid &&
+        neuro_3_valid &&
+        extra_1_valid &&
+        extra_2_valid &&
+        extra_3_valid &&
+        agree_1_valid &&
+        agree_2_valid &&
+        agree_3_valid) {
+        $('#form_signup').submit();
+    }
+
+
+
+};
+
+</script>
+
+
+
+<body>
+
+
+
+<section class="testimonial py-5" id="testimonial">
+    <div class="container">
+        <div class="row ">
+            <div class="col-md-4 py-5 bg-primary text-white text-center ">
+                <div class=" ">
+                    <div class="card-body">
+                        <img src="http://www.ansonika.com/mavia/img/registration_bg.svg" style="width:30%">
+                        <h2 class="py-3">Registration</h2>
+                        <p></p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8 py-5 border">
+                <h4 class="pb-4">Please fill with your details</h4>
+                <form method="POST" class="needs-validation" id="form_signup" novalidate>
+                    {% csrf_token %}
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="user_id">User ID</label>
+                            <input type="text" id="user_id" name="user_id" class="form-control" placeholder="User ID" required>
+                            <div id="user_id_valid" class="valid-feedback">Looks good!</div>
+                            <div id="user_id_invalid" class="invalid-feedback">bad</div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="name">Name</label>
+                            <input type="text" id="name" name="name" class="form-control" placeholder="Your Name" required>
+                            <div id="name_valid" class="valid-feedback">Looks good!</div>
+                            <div id="name_invalid" class="invalid-feedback">bad</div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="password1">Password</label>
+                            <input type="password" id="password1" name="password1" class="form-control" placeholder="Password" required>
+                            <div id="password1_valid" class="valid-feedback">Looks good!</div>
+                            <div id="password1_invalid" class="invalid-feedback">bad</div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="password2">&nbsp;</label>
+                            <input type="password" id="password2" name="password2" class="form-control" placeholder="Repeat Your Password" required>
+                            <div id="password2_valid" class="valid-feedback"></div>
+                            <div id="password2_invalid" class="invalid-feedback"></div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+
+                            <label for="mobile">Mobile Number</label>
+                            <input type="text" id="mobile" name="mobile" class="form-control" placeholder="Mobile No." required>
+                            <div id="mobile_valid" class="valid-feedback">Looks good!</div>
+                            <div id="mobile_invalid" class="invalid-feedback">bad</div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="email">Email</label>
+                            <input type="text" id="email" name="email" class="form-control" placeholder="Email" required>
+                            <div id="email_valid" class="valid-feedback">Looks good!</div>
+                            <div id="email_invalid" class="invalid-feedback">bad</div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="birth">Birth Date</label>
+                            <input type="text" id="birth" name="birth" class="form-control" placeholder="Date of birth (ex. 19990101)" required>
+                            <div id="birth_valid" class="valid-feedback">Looks good!</div>
+                            <div id="birth_invalid" class="invalid-feedback">bad</div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="gender">Gender</label>
+                            <select id="gender" name="gender" class="form-control">
+                                <option disabled selected>Gender</option>
+                                <option> 남</option>
+                                <option> 여</option>
+                            </select>
+                            <div id="gender_valid" class="valid-feedback">Looks good!</div>
+                            <div id="gender_invalid" class="invalid-feedback">bad</div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="form-row">
+                        <div class="form-group col-md-12">
+                            <label for="positive_comment">긍정적인 경험</label>
+                            <textarea id="positive_comment" name="positive_comment" cols="40" rows="1" class="form-control" placeholder="최근에 겪은 긍정적인 경험을 한 가지 입력해 주세요(최소 30자 이상)" required></textarea>
+                            <div id="positive_comment_valid" class="valid-feedback">Looks good!</div>
+                            <div id="positive_comment_invalid" class="invalid-feedback">bad</div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="form-row">
+                        <div class="form-group col-md-12">
+                            <h6>작성한 위의 경험과 관련해서 느낀 감정 및 기분을 작성하고 어느 정도 느꼈는지 표시해 주십시오.</h6>
+                            <h6>(1. 매우약간느꼈다 ~ 5. 매우많이느꼈다)</h6>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="pos_emo1">감정1</label>
+                            <input type="text" id="pos_emo1" name="pos_emo1" class="form-control" placeholder="감정1" required>
+                            <div id="pos_emo1_valid" class="valid-feedback">Looks good!</div>
+                            <div id="pos_emo1_invalid" class="invalid-feedback">bad</div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="pos_emo1_w">감정1 강도</label>
+                            <select id="pos_emo1_w" name="pos_emo1_w" class="form-control">
+                                <option disabled selected>감정1 느낀 정도</option>
+                                <option>1</option>
+                                <option>2</option>
+                                <option>3</option>
+                                <option>4</option>
+                                <option>5</option>
+                            </select>
+                            <div id="pos_emo1_w_valid" class="valid-feedback">Looks good!</div>
+                            <div id="pos_emo1_w_invalid" class="invalid-feedback">bad</div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="pos_emo2">감정2</label>
+                            <input type="text" id="pos_emo2" name="pos_emo2" class="form-control" placeholder="감정2" required>
+                            <div id="pos_emo2_valid" class="valid-feedback">Looks good!</div>
+                            <div id="pos_emo2_invalid" class="invalid-feedback">bad</div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="pos_emo2_w">감정2 강도</label>
+                            <select id="pos_emo2_w" name="pos_emo2_w" class="form-control">
+                                <option disabled selected>감정2 느낀 정도</option>
+                                <option>1</option>
+                                <option>2</option>
+                                <option>3</option>
+                                <option>4</option>
+                                <option>5</option>
+                            </select>
+                            <div id="pos_emo2_w_valid" class="valid-feedback">Looks good!</div>
+                            <div id="pos_emo2_w_invalid" class="invalid-feedback">bad</div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="pos_emo3">감정3</label>
+                            <input type="text" id="pos_emo3" name="pos_emo3" class="form-control" placeholder="감정3" required>
+                            <div id="pos_emo3_valid" class="valid-feedback">Looks good!</div>
+                            <div id="pos_emo3_invalid" class="invalid-feedback">bad</div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="pos_emo3_w">감정3 강도</label>
+                            <select id="pos_emo3_w" name="pos_emo3_w" class="form-control">
+                                <option disabled selected>감정3 느낀 정도</option>
+                                <option>1</option>
+                                <option>2</option>
+                                <option>3</option>
+                                <option>4</option>
+                                <option>5</option>
+                            </select>
+                            <div id="pos_emo3_w_valid" class="valid-feedback">Looks good!</div>
+                            <div id="pos_emo3_w_invalid" class="invalid-feedback">bad</div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="pos_emo4">감정4</label>
+                            <input type="text" id="pos_emo4" name="pos_emo4" class="form-control" placeholder="감정4" required>
+                            <div id="pos_emo4_valid" class="valid-feedback">Looks good!</div>
+                            <div id="pos_emo4_invalid" class="invalid-feedback">bad</div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="pos_emo4_w">감정4 강도</label>
+                            <select id="pos_emo4_w" name="pos_emo4_w" class="form-control">
+                                <option disabled selected>감정4 느낀 정도</option>
+                                <option>1</option>
+                                <option>2</option>
+                                <option>3</option>
+                                <option>4</option>
+                                <option>5</option>
+                            </select>
+                            <div id="pos_emo4_w_valid" class="valid-feedback">Looks good!</div>
+                            <div id="pos_emo4_w_invalid" class="invalid-feedback">bad</div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="pos_emo5">감정5</label>
+                            <input type="text" id="pos_emo5" name="pos_emo5" class="form-control" placeholder="감정5" required>
+                            <div id="pos_emo5_valid" class="valid-feedback">Looks good!</div>
+                            <div id="pos_emo5_invalid" class="invalid-feedback">bad</div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="pos_emo5_w">감정5 강도</label>
+                            <select id="pos_emo5_w" name="pos_emo5_w" class="form-control">
+                                <option disabled selected>감정5 느낀 정도</option>
+                                <option>1</option>
+                                <option>2</option>
+                                <option>3</option>
+                                <option>4</option>
+                                <option>5</option>
+                            </select>
+                            <div id="pos_emo5_w_valid" class="valid-feedback">Looks good!</div>
+                            <div id="pos_emo5_w_invalid" class="invalid-feedback">bad</div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="form-row">
+                        <div class="form-group col-md-12">
+                            <label for="negative_comment">부정적인 경험</label>
+                            <textarea id="negative_comment" name="negative_comment" cols="40" rows="1" class="form-control" placeholder="최근에 겪은 부정적인 경험을 한 가지 입력해 주세요(최소 30자 이상)" required></textarea>
+                            <div id="negative_comment_valid" class="valid-feedback">Looks good!</div>
+                            <div id="negative_comment_invalid" class="invalid-feedback">bad</div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="form-row">
+                        <div class="form-group col-md-12">
+                            <h6>작성한 위의 경험과 관련해서 느낀 감정 및 기분을 작성하고 어느 정도 느꼈는지 표시해 주십시오.</h6>
+                            <h6>(1. 매우약간느꼈다 ~ 5. 매우많이느꼈다)</h6>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="neg_emo1">감정1</label>
+                            <input type="text" id="neg_emo1" name="neg_emo1" class="form-control" placeholder="감정1" required>
+                            <div id="neg_emo1_valid" class="valid-feedback">Looks good!</div>
+                            <div id="neg_emo1_invalid" class="invalid-feedback">bad</div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="neg_emo1_w">감정1 강도</label>
+                            <select id="neg_emo1_w" name="neg_emo1_w" class="form-control">
+                                <option disabled selected>감정1 느낀 정도</option>
+                                <option>1</option>
+                                <option>2</option>
+                                <option>3</option>
+                                <option>4</option>
+                                <option>5</option>
+                            </select>
+                            <div id="neg_emo1_w_valid" class="valid-feedback">Looks good!</div>
+                            <div id="neg_emo1_w_invalid" class="invalid-feedback">bad</div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="neg_emo2">감정2</label>
+                            <input type="text" id="neg_emo2" name="neg_emo2" class="form-control" placeholder="감정2" required>
+                            <div id="neg_emo2_valid" class="valid-feedback">Looks good!</div>
+                            <div id="neg_emo2_invalid" class="invalid-feedback">bad</div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="neg_emo2_w">감정2 강도</label>
+                            <select id="neg_emo2_w" name="neg_emo2_w" class="form-control">
+                                <option disabled selected>감정2 느낀 정도</option>
+                                <option>1</option>
+                                <option>2</option>
+                                <option>3</option>
+                                <option>4</option>
+                                <option>5</option>
+                            </select>
+                            <div id="neg_emo2_w_valid" class="valid-feedback">Looks good!</div>
+                            <div id="neg_emo2_w_invalid" class="invalid-feedback">bad</div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="neg_emo3">감정3</label>
+                            <input type="text" id="neg_emo3" name="neg_emo3" class="form-control" placeholder="감정3" required>
+                            <div id="neg_emo3_valid" class="valid-feedback">Looks good!</div>
+                            <div id="neg_emo3_invalid" class="invalid-feedback">bad</div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="neg_emo3_w">감정3 강도</label>
+                            <select id="neg_emo3_w" name="neg_emo3_w" class="form-control">
+                                <option disabled selected>감정3 느낀 정도</option>
+                                <option>1</option>
+                                <option>2</option>
+                                <option>3</option>
+                                <option>4</option>
+                                <option>5</option>
+                            </select>
+                            <div id="neg_emo3_w_valid" class="valid-feedback">Looks good!</div>
+                            <div id="neg_emo3_w_invalid" class="invalid-feedback">bad</div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="neg_emo4">감정4</label>
+                            <input type="text" id="neg_emo4" name="neg_emo4" class="form-control" placeholder="감정4" required>
+                            <div id="neg_emo4_valid" class="valid-feedback">Looks good!</div>
+                            <div id="neg_emo4_invalid" class="invalid-feedback">bad</div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="neg_emo4_w">감정4 강도</label>
+                            <select id="neg_emo4_w" name="neg_emo4_w" class="form-control">
+                                <option disabled selected>감정4 느낀 정도</option>
+                                <option>1</option>
+                                <option>2</option>
+                                <option>3</option>
+                                <option>4</option>
+                                <option>5</option>
+                            </select>
+                            <div id="neg_emo4_w_valid" class="valid-feedback">Looks good!</div>
+                            <div id="neg_emo4_w_invalid" class="invalid-feedback">bad</div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="neg_emo5">감정5</label>
+                            <input type="text" id="neg_emo5" name="neg_emo5" class="form-control" placeholder="감정5" required>
+                            <div id="neg_emo5_valid" class="valid-feedback">Looks good!</div>
+                            <div id="neg_emo5_invalid" class="invalid-feedback">bad</div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="neg_emo5_w">감정5 강도</label>
+                            <select id="neg_emo5_w" name="neg_emo5_w" class="form-control">
+                                <option disabled selected>감정5 느낀 정도</option>
+                                <option>1</option>
+                                <option>2</option>
+                                <option>3</option>
+                                <option>4</option>
+                                <option>5</option>
+                            </select>
+                            <div id="neg_emo5_w_valid" class="valid-feedback">Looks good!</div>
+                            <div id="neg_emo5_w_invalid" class="invalid-feedback">bad</div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="form-row">
+                        <div class="form-group col-md-12">
+                            <h6>다음은 개인의 특성을 묘사하는 단어들입니다. 아래의 문장이 자신을 얼마나 잘 표현하는지를 아래의 5점 척도를 사용하여 평가해 주십시오. (1. 전혀그렇지않다 ~ 5. 매우그렇다)</h6>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="form-row">
+                        <div class="form-group col-md-12">
+                            <h6 style="font-weight: bolder; text-align: center">"나는 __________ 사람이다"</h6>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="op_1">창의적인</label>
+                            <select id="op_1" name="op_1" class="form-control">
+                                <option disabled selected>창의적인</option>
+                                <option>1</option>
+                                <option>2</option>
+                                <option>3</option>
+                                <option>4</option>
+                                <option>5</option>
+                            </select>
+                            <div id="op_1_valid" class="valid-feedback">Looks good!</div>
+                            <div id="op_1_invalid" class="invalid-feedback">bad</div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="op_2">독창적이며 새로운 생각을 잘 떠올리는</label>
+                            <select id="op_2" name="op_2" class="form-control">
+                                <option disabled selected>독창적이며 새로운 생각을 잘 떠올리는</option>
+                                <option>1</option>
+                                <option>2</option>
+                                <option>3</option>
+                                <option>4</option>
+                                <option>5</option>
+                            </select>
+                            <div id="op_2_valid" class="valid-feedback">Looks good!</div>
+                            <div id="op_2_invalid" class="invalid-feedback">bad</div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="op_3">활발한 상상력을 가진</label>
+                            <select id="op_3" name="op_3" class="form-control">
+                                <option disabled selected>활발한 상상력을 가진</option>
+                                <option>1</option>
+                                <option>2</option>
+                                <option>3</option>
+                                <option>4</option>
+                                <option>5</option>
+                            </select>
+                            <div id="op_3_valid" class="valid-feedback">Looks good!</div>
+                            <div id="op_3_invalid" class="invalid-feedback">bad</div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="con_1">일을 완벽하게 하는</label>
+                            <select id="con_1" name="con_1" class="form-control">
+                                <option disabled selected>일을 완벽하게 하는</option>
+                                <option>1</option>
+                                <option>2</option>
+                                <option>3</option>
+                                <option>4</option>
+                                <option>5</option>
+                            </select>
+                            <div id="con_1_valid" class="valid-feedback">Looks good!</div>
+                            <div id="con_1_invalid" class="invalid-feedback">bad</div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="con_2">일을 능률적으로 하는</label>
+                            <select id="con_2" name="con_2" class="form-control">
+                                <option disabled selected>일을 능률적으로 하는</option>
+                                <option>1</option>
+                                <option>2</option>
+                                <option>3</option>
+                                <option>4</option>
+                                <option>5</option>
+                            </select>
+                            <div id="con_2_valid" class="valid-feedback">Looks good!</div>
+                            <div id="con_2_invalid" class="invalid-feedback">bad</div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="con_3">믿을만하게 일을 하는</label>
+                            <select id="con_3" name="con_3" class="form-control">
+                                <option disabled selected>믿을만하게 일을 하는</option>
+                                <option>1</option>
+                                <option>2</option>
+                                <option>3</option>
+                                <option>4</option>
+                                <option>5</option>
+                            </select>
+                            <div id="con_3_valid" class="valid-feedback">Looks good!</div>
+                            <div id="con_3_invalid" class="invalid-feedback">bad</div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="neuro_1">쉽게 침울해 지는</label>
+                            <select id="neuro_1" name="neuro_1" class="form-control">
+                                <option disabled selected>쉽게 침울해 지는</option>
+                                <option>1</option>
+                                <option>2</option>
+                                <option>3</option>
+                                <option>4</option>
+                                <option>5</option>
+                            </select>
+                            <div id="neuro_1_valid" class="valid-feedback">Looks good!</div>
+                            <div id="neuro_1_invalid" class="invalid-feedback">bad</div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="neuro_2">우울한</label>
+                            <select id="neuro_2" name="neuro_2" class="form-control">
+                                <option disabled selected>우울한</option>
+                                <option>1</option>
+                                <option>2</option>
+                                <option>3</option>
+                                <option>4</option>
+                                <option>5</option>
+                            </select>
+                            <div id="neuro_2_valid" class="valid-feedback">Looks good!</div>
+                            <div id="neuro_2_invalid" class="invalid-feedback">bad</div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="neuro_3">걱정을 많이 하는</label>
+                            <select id="neuro_3" name="neuro_3" class="form-control">
+                                <option disabled selected>걱정을 많이 하는</option>
+                                <option>1</option>
+                                <option>2</option>
+                                <option>3</option>
+                                <option>4</option>
+                                <option>5</option>
+                            </select>
+                            <div id="neuro_3_valid" class="valid-feedback">Looks good!</div>
+                            <div id="neuro_3_invalid" class="invalid-feedback">bad</div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="extra_1">조용한</label>
+                            <select id="extra_1" name="extra_1" class="form-control">
+                                <option disabled selected>조용한</option>
+                                <option>1</option>
+                                <option>2</option>
+                                <option>3</option>
+                                <option>4</option>
+                                <option>5</option>
+                            </select>
+                            <div id="extra_1_valid" class="valid-feedback">Looks good!</div>
+                            <div id="extra_1_invalid" class="invalid-feedback">bad</div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="extra_2">수다스러운</label>
+                            <select id="extra_2" name="extra_2" class="form-control">
+                                <option disabled selected>수다스러운</option>
+                                <option>1</option>
+                                <option>2</option>
+                                <option>3</option>
+                                <option>4</option>
+                                <option>5</option>
+                            </select>
+                            <div id="extra_2_valid" class="valid-feedback">Looks good!</div>
+                            <div id="extra_2_invalid" class="invalid-feedback">bad</div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="extra_3">외향적이며 사교적인</label>
+                            <select id="extra_3" name="extra_3" class="form-control">
+                                <option disabled selected>외향적이며 사교적인</option>
+                                <option>1</option>
+                                <option>2</option>
+                                <option>3</option>
+                                <option>4</option>
+                                <option>5</option>
+                            </select>
+                            <div id="extra_3_valid" class="valid-feedback">Looks good!</div>
+                            <div id="extra_3_invalid" class="invalid-feedback">bad</div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="agree_1">사려깊고 거의 모든 사람에게 친절한</label>
+                            <select id="agree_1" name="agree_1" class="form-control">
+                                <option disabled selected>사려깊고 거의 모든 사람에게 친절한</option>
+                                <option>1</option>
+                                <option>2</option>
+                                <option>3</option>
+                                <option>4</option>
+                                <option>5</option>
+                            </select>
+                            <div id="agree_1_valid" class="valid-feedback">Looks good!</div>
+                            <div id="agree_1_invalid" class="invalid-feedback">bad</div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="agree_2">다른 사람을 잘 도와주며 이타적인</label>
+                            <select id="agree_2" name="agree_2" class="form-control">
+                                <option disabled selected>다른 사람을 잘 도와주며 이타적인</option>
+                                <option>1</option>
+                                <option>2</option>
+                                <option>3</option>
+                                <option>4</option>
+                                <option>5</option>
+                            </select>
+                            <div id="agree_2_valid" class="valid-feedback">Looks good!</div>
+                            <div id="agree_2_invalid" class="invalid-feedback">bad</div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="agree_3">용서를 잘 하는</label>
+                            <select id="agree_3" name="agree_3" class="form-control">
+                                <option disabled selected>용서를 잘 하는</option>
+                                <option>1</option>
+                                <option>2</option>
+                                <option>3</option>
+                                <option>4</option>
+                                <option>5</option>
+                            </select>
+                            <div id="agree_3_valid" class="valid-feedback">Looks good!</div>
+                            <div id="agree_3_invalid" class="invalid-feedback">bad</div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <button type="button" class="btn btn-danger" onclick="validity_check()">Sign up</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+</body>
+</html>

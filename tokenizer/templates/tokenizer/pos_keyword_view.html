@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+{% load static %}
+{% load custom_tags %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1">
+    <title>ECE-LexiconCollector</title>
+    <link rel="stylesheet" href="//unpkg.com/bootstrap@4/dist/css/bootstrap.min.css">
+    <script src='//unpkg.com/jquery@3/dist/jquery.min.js'></script>
+    <script src='//unpkg.com/popper.js@1/dist/umd/popper.min.js'></script>
+    <script src='//unpkg.com/bootstrap@4/dist/js/bootstrap.min.js'></script>
+    <link href="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet" />
+    <script src="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
+    <link rel="Stylesheet" href="{% static 'tokenizer/main.css' %}">
+    <style>
+    .bar-chart {
+      display: flex;
+      justify-content: space-around;
+      height: 160px;
+      padding-top: 60px;
+      overflow: hidden;
+    }
+    .bar-chart .bar {
+        flex: 100%;
+        align-self: flex-end;
+        margin-right: 2px;
+        position: relative;
+        background-color: #79aec8;
+    }
+    .bar-chart .bar:last-child {
+        margin: 0;
+    }
+    .bar-chart .bar:hover {
+        background-color: #417690;
+    }
+
+    .bar-chart .bar .bar-tooltip {
+        position: relative;
+        z-index: 999;
+    }
+    .bar-chart .bar .bar-tooltip {
+        position: absolute;
+        top: -60px;
+        left: 50%;
+        transform: translateX(-50%);
+        text-align: center;
+        font-weight: bold;
+        opacity: 0;
+    }
+    .bar-chart .bar:hover .bar-tooltip {
+        opacity: 1;
+    }
+    .bar-chart .bar .bar-tooltip2 {
+        position: relative;
+        z-index: 999;
+    }
+    .bar-chart .bar .bar-tooltip2 {
+        writing-mode: vertical-rl;
+        text-orientation: upright;
+        position: absolute;
+        top: -20rem;
+        left: 50%;
+        transform: translateX(-50%);
+        text-align: center;
+        font-weight: bold;
+        opacity: 1;
+    }
+    </style>
+    <script>
+$(function(){
+
+})
+    </script>
+</head>
+<body >
+{% csrf_token %}
+    <h2 style="text-align: center"> Positive Keyword Selection Frequency </h2>
+    <div class="results" style="height: 60rem">
+        <div class="bar-chart" style="height:40%">
+            {% for x in fullrange %}
+                {% if pos_all_value|index:x in pos_rec_value %}
+                <div class="bar" style="height:{{ pos_all_per|index:x }}%; background-color: rgba(255, 50, 50, 0.7);">
+                {% else %}
+                <div class="bar" style="height:{{ pos_all_per|index:x }}%;">
+                {% endif %}
+                    <div class="bar-tooltip">
+                    {{ pos_all_n|index:x }}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <div class="bar-chart" style="height:40%">
+        {% for x in fullrange %}
+            <div class="bar" style="height:0%">
+                <div class="bar-tooltip2">
+                    {{ pos_all_value|index:x }}
+                </div>
+            </div>
+        {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

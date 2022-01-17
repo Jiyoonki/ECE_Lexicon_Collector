@@ -1,0 +1,114 @@
+{% extends "admin/change_list.html" %}
+
+{% block content_title %}
+    <h1> Keyword Visualizer </h1>
+{% endblock %}
+
+{% block result_list %}
+    <div class="results">
+
+    <!-- ... -->
+
+    <h2> Positive Keywords Recurrence </h2>
+
+    <style>
+    .bar-chart {
+      display: flex;
+      justify-content: space-around;
+      height: 160px;
+      padding-top: 60px;
+      overflow: hidden;
+    }
+    .bar-chart .bar {
+        flex: 100%;
+        align-self: flex-end;
+        margin-right: 2px;
+        position: relative;
+        background-color: #79aec8;
+    }
+    .bar-chart .bar:last-child {
+        margin: 0;
+    }
+    .bar-chart .bar:hover {
+        background-color: #417690;
+    }
+
+    .bar-chart .bar .bar-tooltip {
+        position: relative;
+        z-index: 999;
+    }
+    .bar-chart .bar .bar-tooltip {
+        position: absolute;
+        top: -60px;
+        left: 50%;
+        transform: translateX(-50%);
+        text-align: center;
+        font-weight: bold;
+        opacity: 0;
+    }
+    .bar-chart .bar:hover .bar-tooltip {
+        opacity: 1;
+    }
+        .bar-chart .bar .bar-tooltip2 {
+        position: relative;
+        z-index: 999;
+    }
+    .bar-chart .bar .bar-tooltip2 {
+        writing-mode: vertical-rl;
+        text-orientation: upright;
+        position: absolute;
+        top: -12rem;
+        left: 50%;
+        transform: translateX(-50%);
+        text-align: center;
+        font-weight: bold;
+        opacity: 1;
+    }
+    </style>
+
+    <div class="results">
+        <div class="bar-chart">
+        {% for x in pos_keywords %}
+            <div class="bar" style="height:{{x.pct}}%">
+                <div class="bar-tooltip">
+                    {{x.recu }}
+                </div>
+            </div>
+        {% endfor %}
+        </div>
+        <div class="bar-chart">
+        {% for x in pos_keywords %}
+            <div class="bar" style="height:0%">
+                <div class="bar-tooltip2">
+                    {{x.keyword }}
+                </div>
+            </div>
+        {% endfor %}
+        </div>
+    </div>
+    <h2> Negative Keywords Recurrence </h2>
+    <div class="results">
+        <div class="bar-chart">
+        {% for x in neg_keywords %}
+            <div class="bar" style="height:{{x.pct}}%">
+                <div class="bar-tooltip">
+                    {{x.recu }}
+                </div>
+            </div>
+        {% endfor %}
+        </div>
+        <div class="bar-chart">
+        {% for x in neg_keywords %}
+            <div class="bar" style="height:0%">
+                <div class="bar-tooltip2">
+                    {{x.keyword }}
+                </div>
+            </div>
+        {% endfor %}
+        </div>
+    </div>
+
+    </div>
+{% endblock %}
+
+{% block pagination %}{% endblock %}

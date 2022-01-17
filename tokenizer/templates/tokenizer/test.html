@@ -1,0 +1,98 @@
+
+<!DOCTYPE html>
+{% load static %}
+{% load custom_tags %}
+<html lang="en">
+<head>
+    <meta name=“viewport” content=“width=device-width, initial-scale=1” charset="UTF-8">
+    <title>ECE-LexiconCollector</title>
+    <link rel="stylesheet" href="//unpkg.com/bootstrap@4/dist/css/bootstrap.min.css">
+    <script src='//unpkg.com/jquery@3/dist/jquery.min.js'></script>
+    <script src='//unpkg.com/popper.js@1/dist/umd/popper.min.js'></script>
+    <script src='//unpkg.com/bootstrap@4/dist/js/bootstrap.min.js'></script>
+    <link rel="Stylesheet" href="{% static 'tokenizer/main.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.min.css"/>
+    <link href="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet" />
+    <script src="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
+<style>
+
+ @media (max-width:991.98px) {
+     .padding {
+         padding: 1.5rem
+     }
+ }
+
+ @media (max-width:767.98px) {
+     .padding {
+         padding: 1rem
+     }
+ }
+
+ .editable-form .editable {
+     color: #000;
+     font-size: .8125rem
+ }
+
+ .editable-form .editable-click {
+     border-color: #000
+ }
+
+ @media (max-width: 991px) {
+     .editable-container.editable-inline .editableform .control-group .editable-buttons {
+         display: block;
+         margin-top: 10px
+     }
+ }
+</style>
+<script>
+(function($) {
+    'use strict';
+    $(function() {
+        if ($('#editable-form').length) {
+            $.fn.editable.defaults.mode = 'inline';
+            $.fn.editableform.buttons =
+                '<button type="submit" class="btn btn-primary btn-sm editable-submit">' +
+                '<i class="fa fa-fw fa-check"></i>' +
+                '</button>' +
+                '<button type="button" class="btn btn-warning btn-sm editable-cancel">' +
+                '<i class="fa fa-fw fa-times"></i>' +
+                '</button>';
+
+            $('#firstname').editable({
+                validate: function(value) {
+                    if ($.trim(value) === '') return 'This field is required';
+                }
+            });
+        }
+    });
+})(jQuery);
+</script>
+</head>
+
+<body>
+
+
+
+<!--x-editable starts-->
+
+
+<div class="card">
+    <div class="card-body">
+        <h4 class="card-title">X-editable Editor</h4>
+        <p class="card-description">Edit forms inline(click on the underline text to test below)</p>
+        <div class="template-demo">
+            <form id="editable-form" class="editable-form">
+                <div class="form-group row"> <label class="col-6 col-lg-4 col-form-label">Empty text field, required</label>
+                    <div class="col-6 col-lg-8 d-flex align-items-center"> <a href="#" id="firstname" data-type="text" data-pk="1" data-placement="right" data-placeholder="Required" data-title="Enter your firstname" class="editable editable-click editable-empty" data-abc="true">Empty</a> </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!--x-editable ends-->
+
+
+
+</body>
+</html>
+
